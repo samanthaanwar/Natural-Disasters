@@ -1,8 +1,6 @@
 import pandas as pd
 import plotly.graph_objects as go
 import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
 
 from storm_data import (
     get_storm_data,
@@ -264,80 +262,3 @@ def get_blackouts_by_fip_for_cluster(blackout_by_storm_sid, storm_sids):
         data.append(blackout)
 
     return pd.concat(data)
-
-
-
-def plot_blackouts_for_cluster(cluster_id, blackout_by_storm_sid, storms_by_cluster_id):
-    """Plot the fips percent change for each fips code in the cluster"""
-    fig, ax = plt.subplots(figsize=(12, 8))
-    blackouts = get_blackouts_by_fip_for_cluster(
-        blackout_by_storm_sid,
-        [storm['sid'] for storm in storms_by_cluster_id[cluster_id]]
-    )
-    blackouts.sort_values(by='percent_change', ascending=False, inplace=True)
-    sns.barplot(data=blackouts, x='fips_code', y='percent_change', ax=ax)
-    ax.set_title(f'Percent Change in Power Outages by FIPS Code for Cluster {cluster_id}')
-    ax.set_ylabel('Percent Change in Power Outages')
-    ax.set_xlabel('FIPS Code')
-
-    # Show the mean and median percent change on the plot as text box
-    mean = blackouts['percent_change'].mean()
-    median = blackouts['percent_change'].median()
-
-    ax.text(0.45, 0.90, f'Mean: {mean:.2f}', transform=ax.transAxes)
-    ax.text(0.45, 0.85, f'Median: {median:.2f}', transform=ax.transAxes)
-    plt.xticks(rotation=90)
-    plt.show()
-
-
-###
-
-def mean_blackout_percent_change_by_cluster(cluster_id, blackout_by_storm_sid, storms_by_cluster_id):
-    blackouts = get_blackouts_by_fip_for_cluster(
-        blackout_by_storm_sid,
-        [storm['sid'] for storm in storms_by_cluster_id[cluster_id]]
-    )
-    blackouts.sort_values(by='percent_change', ascending=False, inplace=True)
-    mean = blackouts['percent_change'].mean()
-    return mean
-
-def mean_intensity_by_cluster(cluster_id, storms_by_cluster_id):
-    """Determine the mean storm intensity for each cluster"""
-    cluster = storms_by_cluster_id[cluster_id]
-    intensities = [storm['intensity'] for storm in cluster]
-    return sum(intensities) / len(intensities)
-
-def plot_blackouts_vs_intensity_by_cluster(clusters, blackout_by_storm_sid, storms_by_cluster_id):
-    """Make a plot which shows the mean blackout and mean storm intensity by cluster.
-    Have the x-axis be the mean storm intensity and the y-axis be the mean blackout percent change.
-    Label each point with the cluster id.
-    """
-    means = {}
-    intensities = {}
-    for cluster_id, cluster in clusters:
-        cluster_mean = mean_blackout_percent_change_by_cluster(cluster_id, blackout_by_storm_sid, storms_by_cluster_id)
-        cluster_intensity = mean_intensity_by_cluster(cluster_id, storms_by_cluster_id)
-        means[cluster_id] = cluster_mean
-        intensities[cluster_id] = cluster_intensity
-
-    plt.scatter(intensities.values(), means.values())
-    i_max = max(intensities.values())
-    i_min = min(intensities.values())
-    half = i_min + ((i_max - i_min) / 2)
-    for cluster_id, cluster in clusters:
-        n_storms = len(storms_by_cluster_id[cluster_id])
-
-        intensity = intensities[cluster_id]
-        label = f"Cluster {cluster_id} ({n_storms}{' storms' if cluster_id == 4 else ''})"
-        plt.text(
-            intensity + (1 if intensity < half else -len(label) / 2.2),
-            means[cluster_id] - 1.2,
-            label,
-            fontsize=8
-        )
-
-    plt.xlabel('Average max wind speed (knots)')
-    plt.ylabel('Mean blackout percent change')
-    plt.title('Blackouts don\'t correlate strongly with wind speed')
-    plt.show()
-
