@@ -2,3 +2,4 @@ streamlit
 xarray
 plotly
 zarr
+netcdf4
