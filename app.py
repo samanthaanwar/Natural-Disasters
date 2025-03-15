@@ -10,6 +10,7 @@ from storm_data import load_tracks
 from power_outage_data import load_yearly_data
 from storm_data import load_tracks
 from storm_power_outages import animated_plot
+import plotly.express as px
 
 tks = load_tracks()
 tks = tks.where(tks.season>=2014, drop=True)
@@ -43,6 +44,12 @@ with tab2:
     # data = data[columns].drop_duplicates().reset_index(drop=True)
     # data.to_csv('fema_storms.csv')
     
-    data = pd.read_csv('data/fema_storms.csv')
-    st.dataframe(data)
+    data = pd.read_csv('data/fema_plot.csv')
+    fema = px.scatter(data, x = 'max_wind_speed', y = 'totalAmountIhpApproved', 
+                 text = 'storm_name', log_y=True)
+    fema.update_traces(textposition='top center')
+    fema.update_layout(height = 600, width = 800, font_family='Arial', 
+                    xaxis_title = 'Maximum Wind Speed', yaxis_title = 'FEMA IHP Approved Funds')
+    
+    st.plotly_chart(fema)
 
