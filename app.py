@@ -17,9 +17,32 @@ yearly_power_data = load_yearly_data()
 
 
 # STREAMLIT APP
+tab1, tab2 = st.tabs(['Power outages', 'FEMA'])
 
-selection = st.text_input('Select storm to view related power outages')
 
-if selection:
-    fig = animated_plot(tks, yearly_power_data, selection)
-    st.plotly_chart(fig)
+with tab1:
+    selection = st.text_input('Select storm to view related power outages')
+
+    if selection:
+        fig = animated_plot(tks, yearly_power_data, selection)
+        st.plotly_chart(fig)
+
+with tab2:
+    # data1 = pd.read_csv('data/DisasterDeclarationsSummaries.csv')
+    # data2 = pd.read_csv('data/FemaWebDisasterSummaries.csv')
+
+    # merged = data1.merge(data2, on = 'disasterNumber')
+
+    # data = merged.loc[merged.incidentType.isin(['Hurricane', 'Tropical Storm', 'Coastal Storm'])].reset_index(drop=True)
+
+    # columns = ['femaDeclarationString', 'disasterNumber', 'state', 'declarationType', 'declarationDate', 'fyDeclared',
+    #            'incidentType', 'declarationTitle', 'incidentBeginDate', 'incidentEndDate', 'declarationRequestNumber',
+    #            'incidentId', 'region', 'totalNumberIaApproved', 'totalAmountIhpApproved',
+    #            'totalAmountHaApproved', 'totalAmountOnaApproved']
+    
+    # data = data[columns].drop_duplicates().reset_index(drop=True)
+    # data.to_csv('fema_storms.csv')
+    
+    data = pd.read_csv('data/fema_storms.csv')
+    st.dataframe(data)
+
