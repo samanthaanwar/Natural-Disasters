@@ -45,7 +45,7 @@ with tab2:
     # data.to_csv('fema_storms.csv')
     
     data = pd.read_csv('data/fema_plot.csv')
-    fema = px.scatter(data, x = 'max_wind_speed', y = 'log_fema', text = 'storm_name', trendline='OLS')
+    fema = px.scatter(data, x = 'max_wind_speed', y = 'log_fema', text = 'storm_name', trendline='ols')
     fema.update_traces(textposition='top center')
 
     fig.add_annotation(
