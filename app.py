@@ -48,7 +48,7 @@ with tab2:
     fema = px.scatter(data, x = 'max_wind_speed', y = 'log_fema', text = 'storm_name', trendline='ols')
     fema.update_traces(textposition='top center')
 
-    fig.add_annotation(
+    fema.add_annotation(
         x=85, y=8,
         showarrow=False,
         text='<i>ln(FEMA) = 12.74 + (0.096 * wind_speed)</i>'
