@@ -45,7 +45,7 @@ with tab2:
     # data.to_csv('fema_storms.csv')
     
     data = pd.read_csv('data/fema_plot.csv')
-    fema = px.scatter(data, x = 'max_wind_speed', y = 'totalAmountIhpApproved', 
+    fema = px.scatter(data, x = 'max_wind_speed', y = 'log_fema', 
                  text = 'storm_name', log_y=True)
     fema.update_traces(textposition='top center')
     fema.update_layout(height = 600, width = 800, font_family='Arial', 
