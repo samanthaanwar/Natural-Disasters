@@ -45,11 +45,17 @@ with tab2:
     # data.to_csv('fema_storms.csv')
     
     data = pd.read_csv('data/fema_plot.csv')
-    fema = px.scatter(data, x = 'max_wind_speed', y = 'log_fema', 
-                 text = 'storm_name', log_y=True)
+    fema = px.scatter(data, x = 'max_wind_speed', y = 'log_fema', text = 'storm_name', trendline='OLS')
     fema.update_traces(textposition='top center')
+
+    fig.add_annotation(
+        x=85, y=8,
+        showarrow=False,
+        text='<i>ln(FEMA) = 12.74 + (0.096 * wind_speed)</i>'
+    )
+
     fema.update_layout(height = 600, width = 800, font_family='Arial', 
-                    xaxis_title = 'Maximum Wind Speed', yaxis_title = 'FEMA IHP Approved Funds')
+                    xaxis_title = 'Average Wind Speed (knots)', yaxis_title = 'ln(FEMA IHP Approved Funds)')
     
     st.plotly_chart(fema)
 
