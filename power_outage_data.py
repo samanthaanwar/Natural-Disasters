@@ -5,7 +5,6 @@ import pandas as pd
 import numpy as np
 import requests
 
-
 DATA_DIR = 'data/'
 
 # List of states on eastern seaboard / south coast
